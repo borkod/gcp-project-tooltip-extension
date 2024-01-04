@@ -1,7 +1,54 @@
 const wordMap = {
     "HELLO": "WORLD",
     "GOOD": "DAY",
-  };
+};
+
+let extensionEnabled = false;
+// Load the state of extensionEnabled from storage
+chrome.storage.local.get('isEnabled', (result) => {
+    extensionEnabled = result.isEnabled || false;
+    if (extensionEnabled) processPage();
+});
+
+
+function processPage() {
+    // Create a new style element
+    const style = document.createElement('style');
+
+    // Set the CSS you want to apply
+    style.textContent = `
+.gcp-tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+  
+.gcp-tooltip .gcp-tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+  
+.gcp-tooltip:hover .gcp-tooltiptext {
+    visibility: visible;
+`;
+
+    // Append the style element to the head of the document
+    document.head.appendChild(style);
+
+    // Start finding "HELLO" occurrences and create tooltips in the entire document
+    const textNodes = [];
+    findTextNodes(document.body, textNodes);
+    createTooltips(textNodes);
+}
 
 // Find all text nodes containing "HELLO"
 function findTextNodes(node, textNodes) {
@@ -39,47 +86,10 @@ function createTooltips(textNodes) {
             span.textContent = wordMap[match[0].toUpperCase()]; // Use the value from wordMap
 
             div.appendChild(span);
-  
+
             const replaced = node.splitText(match.index);
             replaced.nodeValue = replaced.nodeValue.substring(match[0].length);
             replaced.parentNode.insertBefore(div, replaced);
         }
     });
 }
-
-// Create a new style element
-const style = document.createElement('style');
-
-// Append the style element to the head of the document
-document.head.appendChild(style);
-
-// Start finding "HELLO" occurrences and create tooltips in the entire document
-const textNodes = [];
-findTextNodes(document.body, textNodes);
-createTooltips(textNodes);
-
-// Set the CSS you want to apply
-style.textContent = `
-.gcp-tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-}
-  
-.gcp-tooltip .gcp-tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-}
-  
-.gcp-tooltip:hover .gcp-tooltiptext {
-    visibility: visible;
-`;
