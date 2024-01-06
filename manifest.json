@@ -7,19 +7,25 @@
     "permissions": [
         "cookies",
         "activeTab",
-        "storage"
+        "storage",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://console.cloud.google.com/*",
+        "file:///C:/Users/borko/Downloads/testpage.html"
     ],
     "background": {
-        "service_worker": "background.js",
+        "service_worker": "src/background.js",
         "type": "module"
     },
     "content_scripts": [
         {
             "matches": [
-                "<all_urls>"
+                "https://console.cloud.google.com/*",
+                "file:///C:/Users/borko/Downloads/testpage.html"
             ],
-            "js": [
-                "contentScript.js"
+            "css": [
+                "css/tooltip.css"
             ]
         }
     ],
