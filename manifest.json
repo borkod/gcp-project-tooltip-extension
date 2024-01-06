@@ -5,14 +5,12 @@
     "description": "Chrome Extension that adds a tooltip with project names over project ID's in GCP console webpages.",
     "action": {},
     "permissions": [
-        "cookies",
         "activeTab",
         "storage",
         "scripting"
     ],
     "host_permissions": [
-        "https://console.cloud.google.com/*",
-        "file:///C:/Users/borko/Downloads/testpage.html"
+        "https://console.cloud.google.com/*"
     ],
     "background": {
         "service_worker": "src/background.js",
@@ -21,8 +19,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://console.cloud.google.com/*",
-                "file:///C:/Users/borko/Downloads/testpage.html"
+                "https://console.cloud.google.com/*"
             ],
             "css": [
                 "css/tooltip.css"

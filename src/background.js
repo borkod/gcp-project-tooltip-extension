@@ -26,12 +26,19 @@ chrome.action.onClicked.addListener(async (tab) => {
         : { '16': '/images/icon16.png', '48': '/images/icon48.png', '128': '/images/icon128.png' };
     chrome.action.setIcon({ path: iconPath });
 
-    await chrome.scripting.unregisterContentScripts({ ids: ['foo'] }).catch(() => { });
+    await chrome.scripting.unregisterContentScripts({ ids: ['project-id-content-script'] }).catch(() => { });
+
+    const wordMap = {
+        "880324381977": "liveproject-gke",
+    };
+
+    chrome.storage.local.set({myMap: wordMap});
+
     if (extensionEnabled) {
         chrome.scripting.registerContentScripts([{
-            id: 'foo',
+            id: 'project-id-content-script',
             js: ['src/contentScript.js'],
-            matches: ['https://console.cloud.google.com/*', 'file:///C:/Users/borko/Downloads/testpage.html'],
+            matches: ['https://console.cloud.google.com/*'],
             //runAt: 'document_start', // ?
         }]);
     }

@@ -1,4 +1,4 @@
-const wordMap = {
+const myMap = {
     "880324381977": "liveproject-gke",
 };
 
@@ -30,8 +30,14 @@ const observer = new MutationObserver((mutations) => {
 });
 
 function testNode(node) {
+    chrome.storage.local.get(['myMap'], function(result) {
+        // Convert the object back to a Map
+        let myMap = result;
+    
+        console.log(myMap); // Logs the Map to the console
+    });
     // Define an array to store the text nodes
-    const regex = new RegExp("\\b(" + Object.keys(wordMap).join("|") + ")\\b", "gi"); // Match any key from wordMap
+    const regex = new RegExp("\\b(" + Object.keys(myMap).join("|") + ")\\b", "gi"); // Match any key from myMap
     return regex.test(node.textContent) && !node.parentNode.classList.contains('gcp-tooltip') && !node.parentNode.classList.contains('gcp-tooltiptext')
 }
 
@@ -52,7 +58,13 @@ function findTextNodes(node, textNodes) {
 
 // Create tooltips over the text nodes
 function createTooltips(textNodes) {
-    const regex = new RegExp("\\b(" + Object.keys(wordMap).join("|") + ")\\b", "gi"); // Match any key from wordMap
+    chrome.storage.local.get(['myMap'], function(result) {
+        // Convert the object back to a Map
+        let myMap = result;
+    
+        console.log(myMap); // Logs the Map to the console
+    });
+    const regex = new RegExp("\\b(" + Object.keys(myMap).join("|") + ")\\b", "gi"); // Match any key from myMap
     textNodes.forEach(node => {
         let match;
         const matches = [];
@@ -72,7 +84,7 @@ function createTooltips(textNodes) {
 
             const span = document.createElement('span');
             span.classList.add('gcp-tooltiptext');
-            span.textContent = wordMap[match[0].toUpperCase()]; // Use the value from wordMap
+            span.textContent = myMap[match[0].toUpperCase()]; // Use the value from myMap
 
             div.appendChild(span);
 
