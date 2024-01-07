@@ -7,8 +7,9 @@
 .gcp-tooltip .gcp-tooltiptext {
     visibility: hidden;
     width: 120px;
-    background-color: black;
-    color: #fff;
+    /*background-color: black;*/
+    background-color: rgba(173, 216, 230);
+    color: black;
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
@@ -30,7 +31,7 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: black transparent transparent transparent;
+    border-color: rgba(173, 216, 230) transparent transparent transparent;
   }
   
 
