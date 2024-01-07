@@ -1,29 +1,12 @@
-// chrome.action.onClicked.addListener((tab) => {
-//     extensionEnabled = !extensionEnabled; // Toggle extension state
-
-//     // Save the state of extensionEnabled to storage
-//     chrome.storage.local.set({ isEnabled: extensionEnabled });
-
-//     // Update the extension icon to indicate the current state
-//     const iconPath = extensionEnabled
-//         ? { '16': '/images/icon_enabled16.png', '48': '/images/icon_enabled48.png', '128': '/images/icon_enabled128.png' }
-//         : { '16': '/images/icon16.png', '48': '/images/icon48.png', '128': '/images/icon128.png' };
-//     chrome.action.setIcon({ path: iconPath });
-// });
-
 chrome.action.onClicked.addListener(async (tab) => {
-    let extensionEnabled = false; // Variable to track extension state
-    // Load the state of extensionEnabled from storage
-    chrome.storage.local.get('isEnabled', (result) => {
-        extensionEnabled = result.isEnabled || false;
-    });
-    extensionEnabled = !extensionEnabled; // Toggle extension state
-    // Save the state of extensionEnabled to storage
-    chrome.storage.local.set({ isEnabled: extensionEnabled });
+    let {enabled} = await chrome.storage.local.get('enabled');
+    enabled = !enabled;
+    chrome.storage.local.set({enabled});
     // Update the extension icon to indicate the current state
-    const iconPath = extensionEnabled
+    const iconPath = enabled
         ? { '16': '/images/icon_enabled16.png', '48': '/images/icon_enabled48.png', '128': '/images/icon_enabled128.png' }
         : { '16': '/images/icon16.png', '48': '/images/icon48.png', '128': '/images/icon128.png' };
+    console.log(iconPath);
     chrome.action.setIcon({ path: iconPath });
 
     await chrome.scripting.unregisterContentScripts({ ids: ['project-id-content-script'] }).catch(() => { });
@@ -34,15 +17,21 @@ chrome.action.onClicked.addListener(async (tab) => {
 
     chrome.storage.local.set({myMap: wordMap});
 
-    if (extensionEnabled) {
+    // if (enabled) {
+    //     chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
+    //         console.log(token)
+    //     });
+    // }
+
+    if (enabled) {
         chrome.scripting.registerContentScripts([{
             id: 'project-id-content-script',
             js: ['src/contentScript.js'],
             matches: ['https://console.cloud.google.com/*'],
-            //runAt: 'document_start', // ?
+            runAt: 'document_end', // ?
         }]);
     }
-    const execOpts = extensionEnabled ? { files: ['src/contentScript.js'] } : {};
+    const execOpts = enabled ? { files: ['src/contentScript.js'] } : {};
     // Do I need this or can I just execute the script on the tab argument?
     // const tabs = (await chrome.tabs.query({}))
     //   .sort(t => t.active ? -1 : 0); // processing the active tab(s) first
@@ -50,7 +39,9 @@ chrome.action.onClicked.addListener(async (tab) => {
     //   chrome.scripting.executeScript({target: {tabId: id}, ...execOpts})
     //     .catch(() => {});
     // }
-    chrome.scripting.executeScript({ target: { tabId: tab.id }, ...execOpts })
-        .catch(() => { });
+    if (enabled) {
+        chrome.scripting.executeScript({ target: { tabId: tab.id }, ...execOpts })
+            .catch(() => { });
+    }
 });
 

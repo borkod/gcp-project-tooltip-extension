@@ -1,49 +1,55 @@
-const myMap = {
-    "880324381977": "liveproject-gke",
-};
 
-// Define a new observer
-const observer = new MutationObserver((mutations) => {
-    let toProcessNodes = [];
-    mutations.forEach((mutation) => {
-        mutation.addedNodes.forEach((node) => {
-            // Check if the added node is a text node
-            if (node.nodeType === Node.TEXT_NODE) {
-                // Check if the text node contains project id and its parent does not have the tooltip style                
-                if (testNode(node)) {
-                    toProcessNodes.push(node);
-                }
-            } else if (node.nodeType === Node.ELEMENT_NODE) {
-                // If the added node is an element, check its child nodes
-                const textNodes = [];
-                findTextNodes(node, textNodes);
-                textNodes.forEach((textNode) => {
-                    if (testNode(textNode)) {
-                        toProcessNodes.push(textNode);
-                    }
-                });
+let myMap = {};
+
+async function startProcess() {
+    await new Promise((resolve, reject) => {
+        chrome.storage.local.get('myMap', (result) => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                myMap = result.myMap;
+                createMutationObserver();
             }
         });
     });
+}
 
-    createTooltips(toProcessNodes);
-});
+startProcess();
+
+function createMutationObserver() {
+    // Define a new observer - Should this be const or let? With const, getting error: Uncaught SyntaxError: Identifier 'observer' has already been declared
+    const observer = new MutationObserver((mutations) => {
+        let toProcessNodes = [];
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                // Check if the added node is a text node
+                if (node.nodeType === Node.TEXT_NODE) {
+                    // Check if the text node contains project id and its parent does not have the tooltip style                
+                    if (testNode(node)) {
+                        toProcessNodes.push(node);
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    // If the added node is an element, check its child nodes
+                    const textNodes = [];
+                    findTextNodes(node, textNodes);
+                    textNodes.forEach((textNode) => {
+                        if (testNode(textNode)) {
+                            toProcessNodes.push(textNode);
+                        }
+                    });
+                }
+            });
+        });
+        createTooltips(toProcessNodes);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+}
 
 function testNode(node) {
-    chrome.storage.local.get(['myMap'], function(result) {
-        // Convert the object back to a Map
-        let myMap = result;
-    
-        console.log(myMap); // Logs the Map to the console
-    });
-    // Define an array to store the text nodes
     const regex = new RegExp("\\b(" + Object.keys(myMap).join("|") + ")\\b", "gi"); // Match any key from myMap
     return regex.test(node.textContent) && !node.parentNode.classList.contains('gcp-tooltip') && !node.parentNode.classList.contains('gcp-tooltiptext')
 }
 
-
-// Call the observe method on the observer, passing in the target node and the options
-observer.observe(document.body, { childList: true, subtree: true });
 
 // This is the same findTextNodes function from your code
 function findTextNodes(node, textNodes) {
@@ -58,12 +64,6 @@ function findTextNodes(node, textNodes) {
 
 // Create tooltips over the text nodes
 function createTooltips(textNodes) {
-    chrome.storage.local.get(['myMap'], function(result) {
-        // Convert the object back to a Map
-        let myMap = result;
-    
-        console.log(myMap); // Logs the Map to the console
-    });
     const regex = new RegExp("\\b(" + Object.keys(myMap).join("|") + ")\\b", "gi"); // Match any key from myMap
     textNodes.forEach(node => {
         let match;
@@ -78,6 +78,7 @@ function createTooltips(textNodes) {
             if (testNode(match)) {
                 continue;
             }
+
             const div = document.createElement('div');
             div.classList.add('gcp-tooltip');
             div.textContent = match[0]; // Use the matched text

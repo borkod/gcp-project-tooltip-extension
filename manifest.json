@@ -7,8 +7,15 @@
     "permissions": [
         "activeTab",
         "storage",
-        "scripting"
+        "scripting",
+        "identity"
     ],
+    "oauth2": {
+        "client_id": "880324381977-3926rgfjqiqlb9499s4meit0hi99pgpl.apps.googleusercontent.com",
+        "scopes": [
+          "https://www.googleapis.com/auth/cloudplatformprojects.readonly"
+        ]
+    },
     "host_permissions": [
         "https://console.cloud.google.com/*"
     ],
