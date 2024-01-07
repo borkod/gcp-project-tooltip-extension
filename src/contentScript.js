@@ -1,14 +1,14 @@
 
-let myMap = {};
+let projectMap = {};
 
 async function startProcess() {
     await new Promise((resolve, reject) => {
-        chrome.storage.local.get('myMap', (result) => {
+        chrome.storage.local.get('projectMap', (result) => {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
             } else {
-                myMap = result.myMap;
-                createMutationObserver();
+                projectMap = result.projectMap;
+                if (Object.keys(projectMap).length > 0) createMutationObserver();
             }
         });
     });
@@ -46,7 +46,7 @@ function createMutationObserver() {
 }
 
 function testNode(node) {
-    const regex = new RegExp("\\b(" + Object.keys(myMap).join("|") + ")\\b", "gi"); // Match any key from myMap
+    const regex = new RegExp("\\b(" + Object.keys(projectMap).join("|") + ")\\b", "gi"); // Match any key from projectMap
     return regex.test(node.textContent) && !node.parentNode.classList.contains('gcp-tooltip') && !node.parentNode.classList.contains('gcp-tooltiptext')
 }
 
@@ -64,7 +64,7 @@ function findTextNodes(node, textNodes) {
 
 // Create tooltips over the text nodes
 function createTooltips(textNodes) {
-    const regex = new RegExp("\\b(" + Object.keys(myMap).join("|") + ")\\b", "gi"); // Match any key from myMap
+    const regex = new RegExp("\\b(" + Object.keys(projectMap).join("|") + ")\\b", "gi"); // Match any key from projectMap
     textNodes.forEach(node => {
         let match;
         const matches = [];
@@ -85,7 +85,7 @@ function createTooltips(textNodes) {
 
             const span = document.createElement('span');
             span.classList.add('gcp-tooltiptext');
-            span.textContent = myMap[match[0].toUpperCase()]; // Use the value from myMap
+            span.textContent = projectMap[match[0].toUpperCase()]; // Use the value from projectMap
 
             div.appendChild(span);
 
