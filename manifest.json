@@ -11,7 +11,7 @@
         "identity"
     ],
     "oauth2": {
-        "client_id": "880324381977-3926rgfjqiqlb9499s4meit0hi99pgpl.apps.googleusercontent.com",
+        "client_id": "880324381977-18pnlgreqibk8vqsu071ls84utjrkr9a.apps.googleusercontent.com",
         "scopes": [
           "https://www.googleapis.com/auth/cloudplatformprojects.readonly"
         ]
