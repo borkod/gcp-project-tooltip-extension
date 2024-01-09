@@ -10,23 +10,43 @@ chrome.action.onClicked.addListener(async (tab) => {
 
     await chrome.scripting.unregisterContentScripts({ ids: ['project-id-content-script'] }).catch(() => { });
 
-    let projectIDMap = {
-        //"880324381977": "liveproject-gke",
-    };
+    let projectIDMap = {};
 
     if (enabled) {
-        let { token } = await chrome.identity.getAuthToken({ 'interactive': true });
 
-        //const url = new URL('https://cloudresourcemanager.googleapis.com/v3/projects');
-        const url = new URL('https://cloudresourcemanager.googleapis.com/v1/projects')
+        var auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?';
+        const manifest = chrome.runtime.getManifest();
+        const client_id = manifest.oauth2.client_id;
+        const scopes = manifest.oauth2.scopes.join(' ');
+        const redirect_url = 'https://' + chrome.runtime.id + '.chromiumapp.org/';
+        var auth_params = {
+            client_id: client_id,
+            redirect_uri: redirect_url,
+            response_type: 'token',
+            scope: scopes,
+        };
 
-        // This should be parametrized somehow?
-        // const params = {
-        //     parent: 'organizations/0',
-        //     showDeleted: 'false',
-        // };
+        const url = new URLSearchParams(Object.entries(auth_params));
+        url.toString();
+        auth_url += url;
 
-        //url.search = new URLSearchParams(params).toString();
+        let token = await new Promise((resolve, reject) => {
+            chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, function (responseUrl) {
+                if (chrome.runtime.lastError) {
+                    // If there's an error, reject the promise
+                    reject(chrome.runtime.lastError);
+                } else {
+                    let url = new URL(responseUrl);
+                    let params = new URLSearchParams(url.hash.substring(1)); // remove the '#' at the start
+                    resolve(params.get('access_token'));
+                }
+            });
+        }).catch(error => {
+            console.log(error);
+        });
+
+
+        const gcp_url = new URL('https://cloudresourcemanager.googleapis.com/v1/projects')
 
         const headers = new Headers({
             'Authorization': 'Bearer ' + token,
@@ -35,13 +55,14 @@ chrome.action.onClicked.addListener(async (tab) => {
 
         const queryParams = { headers };
 
-        await fetch(url, queryParams)
+        await fetch(gcp_url, queryParams)
             .then((response) => response.json()) // Transform the data into json
             .then(function (data) {
                 data.projects.forEach((project) => {
                     projectIDMap[project.projectNumber] = project.name;
                 });
             })
+
 
         chrome.storage.local.set({ projectMap: projectIDMap });
 
@@ -53,16 +74,8 @@ chrome.action.onClicked.addListener(async (tab) => {
         }]);
 
         const execOpts = enabled ? { files: ['src/contentScript.js'] } : {};
-        // Do I need this or can I just execute the script on the tab argument?
-        // const tabs = (await chrome.tabs.query({}))
-        //   .sort(t => t.active ? -1 : 0); // processing the active tab(s) first
-        // for (const {id} of tabs) {
-        //   chrome.scripting.executeScript({target: {tabId: id}, ...execOpts})
-        //     .catch(() => {});
-        // }
 
         chrome.scripting.executeScript({ target: { tabId: tab.id }, ...execOpts })
             .catch(() => { });
     }
 });
-
