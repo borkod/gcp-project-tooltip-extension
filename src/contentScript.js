@@ -17,7 +17,6 @@ async function startProcess() {
 startProcess();
 
 function createMutationObserver() {
-    // Define a new observer - Should this be const or let? With const, getting error: Uncaught SyntaxError: Identifier 'observer' has already been declared
     const observer = new MutationObserver((mutations) => {
         let toProcessNodes = [];
         mutations.forEach((mutation) => {
@@ -50,8 +49,6 @@ function testNode(node) {
     return regex.test(node.textContent) && !node.parentNode.classList.contains('gcp-tooltip') && !node.parentNode.classList.contains('gcp-tooltiptext')
 }
 
-
-// This is the same findTextNodes function from your code
 function findTextNodes(node, textNodes) {
     if (node.nodeType === Node.TEXT_NODE) {
         textNodes.push(node);
@@ -81,11 +78,11 @@ function createTooltips(textNodes) {
 
             const div = document.createElement('div');
             div.classList.add('gcp-tooltip');
-            div.textContent = match[0]; // Use the matched text
+            div.textContent = match[0];
 
             const span = document.createElement('span');
             span.classList.add('gcp-tooltiptext');
-            span.textContent = projectMap[match[0].toUpperCase()]; // Use the value from projectMap
+            span.textContent = projectMap[match[0].toUpperCase()];
 
             div.appendChild(span);
 
