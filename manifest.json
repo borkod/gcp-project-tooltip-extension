@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "GCP Project ID Tooltip Chrome Extension",
-    "version": "0.1",
+    "version": "1.0",
     "description": "Chrome Extension that adds a tooltip with project name over project ID in GCP console webpages.",
     "action": {},
     "permissions": [
@@ -11,7 +11,7 @@
         "identity"
     ],
     "oauth2": {
-        "client_id": "880324381977-18pnlgreqibk8vqsu071ls84utjrkr9a.apps.googleusercontent.com",
+        "client_id": "your_client_id.apps.googleusercontent.com",
         "scopes": [
           "https://www.googleapis.com/auth/cloudplatformprojects.readonly"
         ]
@@ -38,6 +38,6 @@
         "48": "images/icon48.png",
         "128": "images/icon128.png"
     },
-    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgOOvLmmR7QSWqYUgp+Zz2SQBVPUF8Nzci13UvbFyrmbJI055vEFWHzmnXkOqld31M81mxnxpxHQDgdo4yyRVDT63c9Lbv0/ibzoJ1MUmBY9ZtDPF48I3Mjx4PYMeUnmSQXfmcP4Lzve3PdYVuhArWDS+eidsuSfOud6GLprgCi0HWqNDlmlgB1GNkWIWD9WM/B36N0I266DSnBmpFbTxOI/U5mdKOaXWNoBaD11E2Vp/cwIQ6SZaUjQkBLa+hUJ/h0OgxVntMn5uMgIHgD3fsKbcyBnOvHmkcZil/harKxCM71SxK1qcCMRpIPijy7Yy6yoE6YlNhJIe4Ll9IC7K7QIDAQAB"
+    "key": "your key"
 }
 
