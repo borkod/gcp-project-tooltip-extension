@@ -42,7 +42,7 @@ openssl rsa -in key.pem -pubout -outform DER | shasum -a 256 | head -c32 | tr 0-
   - If you have Google Workspaces, you can make the Application Internal.
   - You will need to add `chromiumapp.org` to **Authorised domains**.  If you don't, it will be automatically added during steps in the next section.
 - For scopes, you will need to add Cloud Resource Manager API `./auth/cloudplatformprojects.readonly`
-- In the **Test Users** page, you can add any users you wish to have access during testing.
+- In the **Test Users** page, you can add any users you wish to have access during testing
 
 ## OAuth Client ID Configuration
 
@@ -55,8 +55,8 @@ To configure an OAuth 2.0 Client ID:
 - Provide a name for the application
 - Add an **Authorised redirect URIs**.
   - The URL should be in the form: `https://<YOUR EXTENSION ID>.chromiumapp.org/`
-  - Replace the `<YOUR EXTENSION ID>` with the extension ID generated in the previous steps above.
-- Take a note of the generated **Client ID**. You will need this value later for the `manifest.json` file.
+  - Replace the `<YOUR EXTENSION ID>` with the extension ID generated in the previous steps above
+- Take a note of the generated **Client ID**. You will need this value later for the `manifest.json` file
 
 ## Enable Cloud Resource Manager API
 
@@ -71,6 +71,12 @@ To configure an OAuth 2.0 Client ID:
 - Install the `gcp-project-tooltip-extension` folder as an unpacked extension:
   - Instructions for [Google Chrome](https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked)
   - Instructions for [Microsoft Edge](https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/getting-started/extension-sideloading)
+
+# Usage
+
+Once the extension is loaded, clicking on the extension icon will toggle extension on/off.
+
+With the extension on, loading any page in Google Console should create a tooltip above any project ID number.
 
 # Issues
 
