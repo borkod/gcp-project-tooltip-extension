@@ -21,10 +21,10 @@ chrome.action.onClicked.addListener(async (tab) => {
     const manifest = chrome.runtime.getManifest()
     const client_id = manifest.oauth2.client_id
     const scopes = manifest.oauth2.scopes.join(' ')
-    const redirect_url = 'https://' + chrome.runtime.id + '.chromiumapp.org/'
+    const redirectURL = 'https://' + chrome.runtime.id + '.chromiumapp.org/'
     const authParams = {
       client_id,
-      redirect_uri: redirect_url,
+      redirect_uri: redirectURL,
       response_type: 'token',
       scope: scopes
     }
