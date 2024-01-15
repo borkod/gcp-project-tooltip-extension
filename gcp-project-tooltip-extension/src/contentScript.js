@@ -44,8 +44,15 @@ function createMutationObserver () {
 }
 
 function testNode (node) {
-  const regex = new RegExp('\\b(' + Object.keys(projectMap).join('|') + ')\\b', 'gi') // Match any key from projectMap
-  return regex.test(node.textContent) && !node.parentNode.classList.contains('gcp-tooltip') && !node.parentNode.classList.contains('gcp-tooltiptext')
+  const regex = new RegExp(
+    '\\b(' + Object.keys(projectMap).join('|') + ')\\b',
+    'gi'
+  ) // Match any key from projectMap
+  return (
+    regex.test(node.textContent) &&
+    !node.parentNode.classList.contains('gcp-tooltip') &&
+    !node.parentNode.classList.contains('gcp-tooltiptext')
+  )
 }
 
 function findTextNodes (node, textNodes) {
@@ -60,8 +67,11 @@ function findTextNodes (node, textNodes) {
 
 // Create tooltips over the text nodes
 function createTooltips (textNodes) {
-  const regex = new RegExp('\\b(' + Object.keys(projectMap).join('|') + ')\\b', 'gi') // Match any key from projectMap
-  textNodes.forEach(node => {
+  const regex = new RegExp(
+    '\\b(' + Object.keys(projectMap).join('|') + ')\\b',
+    'gi'
+  ) // Match any key from projectMap
+  textNodes.forEach((node) => {
     let match
     const matches = []
     // Store all matches
