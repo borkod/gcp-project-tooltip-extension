@@ -8,7 +8,11 @@ chrome.action.onClicked.addListener(async (tab) => {
         : { '16': '/images/icon16.png', '48': '/images/icon48.png', '128': '/images/icon128.png' };
     chrome.action.setIcon({ path: iconPath });
 
-    await chrome.scripting.unregisterContentScripts({ ids: ['project-id-content-script'] }).catch(() => { });
+    try {
+        await chrome.scripting.unregisterContentScripts({ ids: ['project-id-content-script'] });
+    } catch (error) {
+        console.log(error);
+    }
 
     let projectIDMap = {};
 
@@ -30,20 +34,23 @@ chrome.action.onClicked.addListener(async (tab) => {
         url.toString();
         auth_url += url;
 
-        let token = await new Promise((resolve, reject) => {
-            chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, function (responseUrl) {
-                if (chrome.runtime.lastError) {
-                    // If there's an error, reject the promise
-                    reject(chrome.runtime.lastError);
-                } else {
-                    let url = new URL(responseUrl);
-                    let params = new URLSearchParams(url.hash.substring(1)); // remove the '#' at the start
-                    resolve(params.get('access_token'));
-                }
+        let token;
+        try {
+            token = await new Promise((resolve, reject) => {
+                chrome.identity.launchWebAuthFlow({ url: auth_url, interactive: true }, function (responseUrl) {
+                    if (chrome.runtime.lastError) {
+                        // If there's an error, reject the promise
+                        reject(chrome.runtime.lastError);
+                    } else {
+                        let url = new URL(responseUrl);
+                        let params = new URLSearchParams(url.hash.substring(1)); // remove the '#' at the start
+                        resolve(params.get('access_token'));
+                    }
+                });
             });
-        }).catch(error => {
+        } catch (error) {
             console.log(error);
-        });
+        }
 
 
         const gcp_url = new URL('https://cloudresourcemanager.googleapis.com/v1/projects')
@@ -75,7 +82,11 @@ chrome.action.onClicked.addListener(async (tab) => {
 
         const execOpts = enabled ? { files: ['src/contentScript.js'] } : {};
 
-        chrome.scripting.executeScript({ target: { tabId: tab.id }, ...execOpts })
-            .catch(() => { });
+
+        try {
+            await chrome.scripting.executeScript({ target: { tabId: tab.id }, ...execOpts });
+        } catch (error) {
+            console.log(error);
+        }
     }
 });
