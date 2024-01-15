@@ -1,4 +1,6 @@
 # GCP Project ID Tooltip Extension
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 This Chrome Extension adds a tooltip with project name over any project number in GCP console webpages.
 
 ![GCP IAM Tooltip Example](img/gcp-iam-tooltip.gif "GCP IAM Tooltip Example")
