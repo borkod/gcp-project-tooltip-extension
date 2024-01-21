@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "GCP Project ID Tooltip Chrome Extension",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Chrome Extension that adds a tooltip with project name over project number in GCP console webpages.",
     "action": {},
     "permissions": [
