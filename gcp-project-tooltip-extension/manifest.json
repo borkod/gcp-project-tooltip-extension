@@ -4,6 +4,7 @@
     "version": "1.1",
     "description": "Chrome Extension that adds a tooltip with project name over project number in GCP console webpages.",
     "action": {},
+    "options_page": "options.html",
     "permissions": [
         "activeTab",
         "storage",
